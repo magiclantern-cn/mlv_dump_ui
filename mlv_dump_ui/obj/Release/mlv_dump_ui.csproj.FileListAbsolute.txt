@@ -1,0 +1,16 @@
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\bin\Release\mlv_dump_ui.exe.config
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\bin\Release\mlv_dump_ui.exe
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\bin\Release\mlv_dump_ui.pdb
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\MainWindow.g.cs
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\App.g.cs
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui_Content.g.cs
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui_MarkupCompile.cache
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui_MarkupCompile.lref
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\MainWindow.baml
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.g.resources
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.Properties.Resources.resources
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.csproj.GenerateResource.cache
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.csproj.CoreCompileInputs.cache
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.exe
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.pdb
+C:\Users\wyspa\source\repos\mlv_dump_ui\mlv_dump_ui\obj\Release\mlv_dump_ui.csprojAssemblyReference.cache
