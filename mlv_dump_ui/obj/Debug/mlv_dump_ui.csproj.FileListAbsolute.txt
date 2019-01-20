@@ -29,3 +29,12 @@ C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\obj\Debug\mlv_du
 C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\obj\Debug\mlv_dump_ui.csproj.CoreCompileInputs.cache
 C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\obj\Debug\mlv_dump_ui.exe
 C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\obj\Debug\mlv_dump_ui.pdb
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui.output\mlv_dump_ui.exe.manifest
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui.output\mlv_dump_ui.application
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\obj\Debug\mlv_dump_ui.exe.manifest
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\obj\Debug\mlv_dump_ui.application
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\bin\Debug\mlv_dump_ui.exe.config
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\bin\Debug\mlv_dump_ui.exe.manifest
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\bin\Debug\mlv_dump_ui.application
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\bin\Debug\mlv_dump_ui.exe
+C:\Users\wyspa\Documents\GitHubProjects\mlv_dump_ui\mlv_dump_ui\bin\Debug\mlv_dump_ui.pdb
