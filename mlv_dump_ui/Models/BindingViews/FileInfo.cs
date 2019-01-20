@@ -1,40 +1,24 @@
 ﻿using System.ComponentModel;
 
-namespace mlv_dump_ui.Models.BindingView
+namespace mlv_dump_ui.Models.BindingViews
 {
-    //public class MLVFileInfo:BaseEntity, INotifyPropertyChanged
-    //{
-    //    public bool Select { get; set; } = false;
-    //    public string Name { get; set; }
-    //    public string Path { get; set; }
-    //    public string CreateTime { get; set; }
-    //    public decimal Size { get; set; }
-    //    public string TaskProgress { get; set; }
-
-    //    public event PropertyChangedEventHandler PropertyChanged;
-
-    //    public override string ToString()
-    //    {
-    //        return System.IO.Path.Combine(Path, Name);
-    //    }
-    //}
     public class MLVFileInfo : BaseEntity, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private bool _select = false;
+        private bool _isselected = false;
         private string _name;
         private string _path;
         private string _createTime;
         private decimal _size;
         private string _taskProgress = "1";
 
-        public bool Select
+        public bool IsSelected
         {
-            get { return _select; }
+            get { return _isselected; }
             set
             {
-                _select = value;
-                OnPropertyChanged("Select");
+                _isselected = value;
+                OnPropertyChanged("IsSelected");
             }
         }
 

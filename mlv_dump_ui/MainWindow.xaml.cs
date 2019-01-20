@@ -1,6 +1,5 @@
-﻿using mlv_dump_ui.Models.BindingView;
+﻿using mlv_dump_ui.Models.BindingViews;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -29,12 +28,14 @@ namespace mlv_dump_ui
 
         private HwndSource hwndSource = null;
 
-        private ObservableCollection<MLVFileInfo> fileInfos = new ObservableCollection<MLVFileInfo>();
+        private ObservableCollection<MLVFileInfo> mlvFileInfos = new ObservableCollection<MLVFileInfo>();
+        private CheckAllSource checkAllSource = new CheckAllSource();
 
         public MainWindow()
         {
             InitializeComponent();
-            listView1.ItemsSource = fileInfos;
+            listView1.ItemsSource = mlvFileInfos;
+            check_ALL.DataContext = checkAllSource;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -57,8 +58,8 @@ namespace mlv_dump_ui
         {
             if (fileInfo == null)
                 return;
-            if (fileInfos.FirstOrDefault(f=>f.ToString() == fileInfo.ToString()) == null)
-                fileInfos.Add(fileInfo);
+            if (mlvFileInfos.FirstOrDefault(f=>f.ToString() == fileInfo.ToString()) == null)
+                mlvFileInfos.Add(fileInfo);
         }
 
         private void ScanRemovableDriver()
@@ -116,7 +117,7 @@ namespace mlv_dump_ui
                             break;
                         case DBT_DEVICEREMOVECOMPLETE:
                             //this.textBox2.AppendText("U盘已卸载\r\n");
-                            fileInfos.Clear();
+                            mlvFileInfos.Clear();
                             break;
                         default:
                             break;
@@ -139,15 +140,15 @@ namespace mlv_dump_ui
                 return;
             }
 
-            if (listView1.ItemContainerGenerator.Items.Any(a => ((MLVFileInfo) a).Select) == false)
+            if (listView1.ItemContainerGenerator.Items.Any(a => ((MLVFileInfo) a).IsSelected) == false)
             {
                 MessageBox.Show("选择导出视频");
                 return;
             }
 
-            foreach (var item in fileInfos)
+            foreach (var item in mlvFileInfos)
             {
-                if (item.Select)
+                if (item.IsSelected)
                 {
                     string file = item.ToString();
                     var fileInfo = new FileInfo(file);
@@ -224,7 +225,7 @@ namespace mlv_dump_ui
                         if (startIndex > 0 && endIndex > 0)
                         {
                             string taskPro = output.Substring(startIndex + 2, endIndex - (startIndex + 2) - 1);
-                            fileInfos.First(f => f.Id == id).TaskProgress = taskPro;
+                            mlvFileInfos.First(f => f.Id == id).TaskProgress = taskPro;
                         }
                     }
                     await Task.Delay(1);
@@ -237,16 +238,16 @@ namespace mlv_dump_ui
             CheckBox cb = sender as CheckBox;
             if (cb.IsChecked == true)
             {
-                foreach (var f in fileInfos)
+                foreach (var f in mlvFileInfos)
                 {
-                    f.Select = true;
+                    f.IsSelected = true;
                 }
             }
             else
             {
-                foreach (var f in fileInfos)
+                foreach (var f in mlvFileInfos)
                 {
-                    f.Select = false;
+                    f.IsSelected = false;
                 }
             }
         }
@@ -271,6 +272,14 @@ namespace mlv_dump_ui
                     AddMlvFileForListView(q);
                 }
             }
+        }
+
+        private void CheckBox1_Click(object sender, RoutedEventArgs e)
+        {
+            if (mlvFileInfos.Count(c => c.IsSelected == true) == mlvFileInfos.Count())
+                checkAllSource.IsSelected = true;
+            else
+                checkAllSource.IsSelected = false;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mlv_dump_ui.Models.BindingView
+namespace mlv_dump_ui.Models.BindingViews
 {
     public class BindingListView<T> : INotifyPropertyChanged
     {

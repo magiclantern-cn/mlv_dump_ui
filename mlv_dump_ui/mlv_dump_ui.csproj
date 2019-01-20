@@ -101,7 +101,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\BaseEntity.cs" />
-    <Compile Include="Models\BindingView\FileInfo.cs" />
+    <Compile Include="Models\BindingViews\CheckAllSource.cs" />
+    <Compile Include="Models\BindingViews\FileInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -137,5 +138,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
