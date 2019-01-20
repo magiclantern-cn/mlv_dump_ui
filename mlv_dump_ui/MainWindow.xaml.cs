@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using CheckBox = System.Windows.Controls.CheckBox;
+using DataFormats = System.Windows.Forms.DataFormats;
 using MessageBox = System.Windows.MessageBox;
 
 namespace mlv_dump_ui
@@ -28,15 +29,17 @@ namespace mlv_dump_ui
 
         private HwndSource hwndSource = null;
 
+        private ObservableCollection<MLVFileInfo> fileInfos = new ObservableCollection<MLVFileInfo>();
+
         public MainWindow()
         {
             InitializeComponent();
+            listView1.ItemsSource = fileInfos;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
             ScanRemovableDriver();
-            //_syncContext = SynchronizationContext.Current;
 
             hwndSource = PresentationSource.FromVisual(this) as HwndSource; //窗口过程
             if (hwndSource != null)
@@ -54,8 +57,8 @@ namespace mlv_dump_ui
         {
             if (fileInfo == null)
                 return;
-            if (listView1.ItemContainerGenerator.Items.Any(a => a.ToString() == fileInfo.ToString()) == false)
-                listView1.Items.Add(fileInfo);
+            if (fileInfos.FirstOrDefault(f=>f.ToString() == fileInfo.ToString()) == null)
+                fileInfos.Add(fileInfo);
         }
 
         private void ScanRemovableDriver()
@@ -113,7 +116,7 @@ namespace mlv_dump_ui
                             break;
                         case DBT_DEVICEREMOVECOMPLETE:
                             //this.textBox2.AppendText("U盘已卸载\r\n");
-                            listView1.Items.Clear();
+                            fileInfos.Clear();
                             break;
                         default:
                             break;
@@ -142,7 +145,7 @@ namespace mlv_dump_ui
                 return;
             }
 
-            foreach (MLVFileInfo item in listView1.ItemContainerGenerator.Items)
+            foreach (var item in fileInfos)
             {
                 if (item.Select)
                 {
@@ -156,31 +159,8 @@ namespace mlv_dump_ui
                     string cmdLine = string.Format("--batch --dng {0} -o {1}\\", file, path);
                     new Thread(() => { MlvToDng(cmdLine,item.Id); }).Start();
                 }
-
-                //textBox2.Text += item.ToString() + "\r\n";
             }
         }
-
-        //private Task UpdateUiAsync(int i)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        this.Dispatcher.Invoke(async () =>
-        //        {
-        //            while (true)
-        //            {
-        //                listView1.Items.Add(new MLVFileInfo
-        //                {
-        //                    Name = i.ToString() + ".MLV",
-        //                    CreateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"),
-        //                    Path = "C:/",
-        //                    Size = i
-        //                });
-        //                await Task.Delay(300);
-        //            }
-        //        });
-        //    });
-        //}
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
@@ -233,7 +213,6 @@ namespace mlv_dump_ui
 
         private Task Display(string output,Guid? id)
         {
-            
             return Task.Run(() =>
             {
                 this.Dispatcher.Invoke(async () =>
@@ -245,12 +224,9 @@ namespace mlv_dump_ui
                         if (startIndex > 0 && endIndex > 0)
                         {
                             string taskPro = output.Substring(startIndex + 2, endIndex - (startIndex + 2) - 1);
-                            listView1.ItemContainerGenerator.Items.Select(s => (MLVFileInfo) s)
-                                .First(f => f.Id == id).TaskProgress = taskPro;
-                            listView1.Items.Refresh();
+                            fileInfos.First(f => f.Id == id).TaskProgress = taskPro;
                         }
                     }
-
                     await Task.Delay(1);
                 });
             });
@@ -261,30 +237,40 @@ namespace mlv_dump_ui
             CheckBox cb = sender as CheckBox;
             if (cb.IsChecked == true)
             {
-                foreach (MLVFileInfo fileInfo in listView1.ItemContainerGenerator.Items)
+                foreach (var f in fileInfos)
                 {
-                    fileInfo.Select = true;
+                    f.Select = true;
                 }
             }
             else
             {
-                foreach (MLVFileInfo fileInfo in listView1.ItemContainerGenerator.Items)
+                foreach (var f in fileInfos)
                 {
-                    fileInfo.Select = false;
+                    f.Select = false;
                 }
             }
         }
 
-        private void CheckBox1_OnClick(object sender, RoutedEventArgs e)
+        private void ListView1_Drop(object sender, System.Windows.DragEventArgs e)
         {
-            CheckBox box = (CheckBox) sender;
-            listView1.ItemContainerGenerator.Items.Select(s => (MLVFileInfo) s)
-                .First(f => f.Id.ToString() == box.Tag.ToString()).Select = box.IsChecked.Value;
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            listView1.Items.Refresh();
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+            {
+                String[] files = (String[]) e.Data.GetData(DataFormats.FileDrop);
+                var query = from f in files
+                    let l = new FileInfo(f)
+                    where l.Extension.ToLower() == ".mlv"
+                    select new MLVFileInfo()
+                    {
+                        Name = l.Name,
+                        Path = l.DirectoryName,
+                        CreateTime = l.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                        Size = Math.Round((decimal) l.Length / (1024 * 1024 * 1024), 2)
+                    };
+                foreach (var q in query)
+                {
+                    AddMlvFileForListView(q);
+                }
+            }
         }
     }
 }
