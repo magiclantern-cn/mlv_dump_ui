@@ -5,39 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mlv_dump_ui"
         mc:Ignorable="d"
-        Title="mlv_dump_ui  QQ:82121500" Height="523.2" Width="900">
+        Title="mlv_dump_ui  QQ:82121500" Height="577" Width="1232">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="9*"/>
-            <RowDefinition Height="343*"/>
-            <RowDefinition Height="20*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="251*"/>
-            <ColumnDefinition Width="37*"/>
-            <ColumnDefinition Width="607*"/>
-        </Grid.ColumnDefinitions>
-        <Button Content="执行导出" HorizontalAlignment="Left" Margin="514.191,418,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Grid.Column="2" Grid.Row="1" Height="23"/>
-        <Button Content="..." HorizontalAlignment="Left" Margin="443.191,419,0,0" VerticalAlignment="Top" Width="18" Click="Button_Click_1" Grid.Column="2" Grid.Row="1" Height="23"/>
-        <Label Content="导出目录" HorizontalAlignment="Left" Margin="12,417,0,0" VerticalAlignment="Top" Grid.Row="1" Height="25" Width="58"/>
-        <TextBox Name="textBox1" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="74,418,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="652" Grid.ColumnSpan="3" Grid.Row="1"/>
-        <Menu HorizontalAlignment="Left" Height="22" VerticalAlignment="Top" Width="894" Grid.RowSpan="2" Grid.ColumnSpan="3">
+    <Grid HorizontalAlignment="Left" Width="1221" >
+        <Menu HorizontalAlignment="Left" Height="26" VerticalAlignment="Top">
             <MenuItem Header="关于" >
                 <MenuItem Header="捐赠"/>
                 <MenuItem Header="版本"/>
             </MenuItem>
         </Menu>
-        <TabControl Grid.ColumnSpan="3" Margin="10,14,10,54" Grid.Row="1">
-            <TabItem  Cursor="Hand" Header="无损视频">
-                <Grid Background="#33ffffff">
-                    <ListView Name="listView1" AllowDrop="True" Drop="ListView1_Drop" >
+        <TabControl Margin="0,22,0,0">
+            <TabItem Name="tabItem1"  Cursor="Hand" Height="28">
+                <TabItem.Header>
+                    <Label Name="tabLabel1" Content="无损视频" MouseLeftButtonDown="TabLabel1_MouseLeftButtonDown"></Label>
+                </TabItem.Header>
+                <Grid Background="#33ffffff" >
+                    <ListView Name="listView1" AllowDrop="True" Drop="ListView1_Drop" Margin="0,0,0,50" Grid.ColumnSpan="3">
                         <ListView.View>
                             <GridView x:Name="gridView1">
                                 <GridView.Columns>
-                                    <GridViewColumn x:Name="gvc" Width="60">
+                                    <GridViewColumn x:Name="gvc1" Width="60">
                                         <GridViewColumn.Header>
-                                            <CheckBox x:Name="check_ALL" IsChecked="{Binding Path=IsSelected,Mode=TwoWay}" Click="Check_ALL_OnClick">全选</CheckBox>
+                                            <CheckBox x:Name="check_ALL1" IsChecked="{Binding Path=IsSelected,Mode=TwoWay}" Click="Check_ALL_OnClick">全选</CheckBox>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -56,14 +45,29 @@
                     </ListView>
                 </Grid>
             </TabItem>
-            <!--<TabItem  Cursor="Hand" Header="Double ISO" HorizontalAlignment="Right" Width="81.613" >
+            <TabItem Name="tabItem2"  Cursor="Hand" Height="28">
+                <TabItem.Header>
+                    <Label Name="tabLabel2" Content="Double ISO" MouseLeftButtonDown="TabLabel2_MouseLeftButtonDown"></Label>
+                </TabItem.Header>
                 <Grid Background="#33ffffff">
-                    <ListView Name="listView2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="13*"/>
+                        <ColumnDefinition Width="333*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView Name="listView2" AllowDrop="True" Drop="ListView2_Drop" Grid.ColumnSpan="2" Margin="0,0,0,50">
                         <ListView.View>
                             <GridView x:Name="gridView2">
-                                <GridView.Columns>                                    
-                                    <GridViewColumn Header="Id" Width="0" DisplayMemberBinding="{Binding Path=Id}"/>
-                                    <GridViewColumn Header="Select" Width="0" DisplayMemberBinding="{Binding Path=Select}"></GridViewColumn>
+                                <GridView.Columns>
+                                    <GridViewColumn x:Name="gvc2" Width="60">
+                                        <GridViewColumn.Header>
+                                            <CheckBox x:Name="check_ALL2" IsChecked="{Binding Path=IsSelected,Mode=TwoWay}" Click="Check_ALL2_Click">全选</CheckBox>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox x:Name="checkBox2" IsChecked="{Binding Path=IsSelected,Mode=TwoWay}" Tag="{Binding Path=Id,Mode=TwoWay}" Click="CheckBox2_Click"></CheckBox>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                     <GridViewColumn Header="文件名" Width="120" DisplayMemberBinding="{Binding Path=Name}"/>
                                     <GridViewColumn Header="地址" Width="260" DisplayMemberBinding="{Binding Path=Path}"/>
                                     <GridViewColumn Header="拍摄时间" Width="130" DisplayMemberBinding="{Binding Path=CreateTime}"/>
@@ -74,7 +78,11 @@
                         </ListView.View>
                     </ListView>
                 </Grid>
-            </TabItem>-->
+            </TabItem>
         </TabControl>
+        <Button Content="执行导出" Margin="787,510,343,0" VerticalAlignment="Top" Click="Button_Click" Height="22"/>
+        <Button Content="..." HorizontalAlignment="Left" Margin="731,510,0,0" VerticalAlignment="Top" Width="18" Click="Button_Click_1" Height="22"/>
+        <Label Content="导出目录" HorizontalAlignment="Left" Margin="12,508,0,0" VerticalAlignment="Top" Height="26" Width="58"/>
+        <TextBox Name="textBox1" IsReadOnly="True" HorizontalAlignment="Left" Height="22" Margin="74,510,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="652"/>
     </Grid>
 </Window>

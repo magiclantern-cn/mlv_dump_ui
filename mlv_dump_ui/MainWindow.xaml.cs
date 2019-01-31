@@ -21,6 +21,7 @@ namespace mlv_dump_ui
     /// </summary>
     public partial class MainWindow : Window
     {
+
         //定义常量  
         public const int WM_DEVICECHANGE = 0x219;
         public const int DBT_DEVICEARRIVAL = 0x8000;
@@ -28,14 +29,20 @@ namespace mlv_dump_ui
 
         private HwndSource hwndSource = null;
 
-        private ObservableCollection<MLVFileInfo> mlvFileInfos = new ObservableCollection<MLVFileInfo>();
-        private CheckAllSource checkAllSource = new CheckAllSource();
+        private ObservableCollection<RawFileInfo> mlvFileInfos = new ObservableCollection<RawFileInfo>();
+        private ObservableCollection<RawFileInfo> dISOFileInfos = new ObservableCollection<RawFileInfo>();
+        private CheckAllSource checkAllSource1 = new CheckAllSource();
+        private CheckAllSource checkAllSource2 = new CheckAllSource();
+
+        private TabIndexs tabIndex = TabIndexs.mlv;
 
         public MainWindow()
         {
             InitializeComponent();
             listView1.ItemsSource = mlvFileInfos;
-            check_ALL.DataContext = checkAllSource;
+            listView2.ItemsSource = dISOFileInfos;
+            check_ALL1.DataContext = checkAllSource1;
+            check_ALL2.DataContext = checkAllSource2;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -54,12 +61,20 @@ namespace mlv_dump_ui
             base.OnClosing(e);
         }
 
-        private void AddMlvFileForListView(MLVFileInfo fileInfo)
+        private void AddMlvFileForListView(RawFileInfo fileInfo)
         {
             if (fileInfo == null)
                 return;
             if (mlvFileInfos.FirstOrDefault(f=>f.ToString() == fileInfo.ToString()) == null)
                 mlvFileInfos.Add(fileInfo);
+        }
+
+        private void AddDoubleISOFileForListView(RawFileInfo fileInfo)
+        {
+            if (fileInfo == null)
+                return;
+            if (dISOFileInfos.FirstOrDefault(f => f.ToString() == fileInfo.ToString()) == null)
+                dISOFileInfos.Add(fileInfo);
         }
 
         private void ScanRemovableDriver()
@@ -70,6 +85,7 @@ namespace mlv_dump_ui
                 if (drive.DriveType == DriveType.Removable && drive.IsReady)
                 {
                     ScanMlvFile(drive.Name);
+                    ScanDoubleISOFile(drive.Name);
                 }
             }
         }
@@ -89,12 +105,40 @@ namespace mlv_dump_ui
                     foreach (var file in Directory.GetFiles(NextFolder.FullName, "*.MLV"))
                     {
                         var fileInfo = new FileInfo(file);
-                        AddMlvFileForListView(new MLVFileInfo()
+                        AddMlvFileForListView(new RawFileInfo()
                         {
                             Name = fileInfo.Name,
                             Path = fileInfo.DirectoryName,
                             CreateTime = fileInfo.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"),
                             Size = Math.Round((decimal)fileInfo.Length / (1024 * 1024 * 1024), 2)
+                        });
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 扫描DoubleISO文件
+        /// </summary>
+        /// <param name="path"></param>
+        private void ScanDoubleISOFile(string path)
+        {
+            string folderFullName = Path.Combine(path, "DCIM");
+            if (Directory.Exists(folderFullName))
+            {
+
+                DirectoryInfo TheFolder = new DirectoryInfo(folderFullName);
+                foreach (DirectoryInfo NextFolder in TheFolder.GetDirectories())
+                {
+                    foreach (var file in Directory.GetFiles(NextFolder.FullName, "*.MLV"))
+                    {
+                        var fileInfo = new FileInfo(file);
+                        AddDoubleISOFileForListView(new RawFileInfo()
+                        {
+                            Name = fileInfo.Name,
+                            Path = fileInfo.DirectoryName,
+                            CreateTime = fileInfo.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                            Size = Math.Round((decimal)fileInfo.Length / (1024 * 1024), 2)
                         });
                     }
                 }
@@ -140,27 +184,58 @@ namespace mlv_dump_ui
                 return;
             }
 
-            if (listView1.ItemContainerGenerator.Items.Any(a => ((MLVFileInfo) a).IsSelected) == false)
+            switch (tabIndex)
             {
-                MessageBox.Show("选择导出视频");
-                return;
-            }
-
-            foreach (var item in mlvFileInfos)
-            {
-                if (item.IsSelected)
-                {
-                    string file = item.ToString();
-                    var fileInfo = new FileInfo(file);
-                    string path = Path.Combine(textBox1.Text, Path.GetFileNameWithoutExtension(item.ToString()));
-                    if (!Directory.Exists(path))
+                case TabIndexs.mlv:
+                    if (listView1.ItemContainerGenerator.Items.Any(a => ((RawFileInfo)a).IsSelected) == false)
                     {
-                        Directory.CreateDirectory(path);
+                        MessageBox.Show("选择导出视频");
+                        return;
                     }
-                    string cmdLine = string.Format("--batch --dng {0} -o {1}\\", file, path);
-                    new Thread(() => { MlvToDng(cmdLine,item.Id); }).Start();
-                }
+
+                    foreach (var item in mlvFileInfos)
+                    {
+                        if (item.IsSelected)
+                        {
+                            string file = item.ToString();
+                            var fileInfo = new FileInfo(file);
+                            string path = Path.Combine(textBox1.Text, Path.GetFileNameWithoutExtension(item.ToString()));
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+
+                            string cmdLine = $"--batch --dng {file} -o {path}\\";
+                            new Thread(() => { ExecutExtendApp("mlv_dump.exe", cmdLine, item.Id); }).Start();
+                        }
+                    }
+                    break;
+                case TabIndexs.diso:
+                    if (dISOFileInfos.Count(c=>c.IsSelected == true)==0)
+                    {
+                        MessageBox.Show("选择导出照片");
+                        return;
+                    }
+                    foreach (var item in dISOFileInfos)
+                    {
+                        if (item.IsSelected)
+                        {
+                            string file = item.ToString();
+                            var fileInfo = new FileInfo(file);
+                            string path = Path.Combine(textBox1.Text, Path.GetFileNameWithoutExtension(item.ToString()));
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+
+                            string cmdLine = $"--batch --dng {file} -o {path}\\";
+                            new Thread(() => { ExecutExtendApp("cr2hdr.exe", cmdLine, item.Id); }).Start();
+                        }
+                    }
+                    break;
+                    break;
             }
+            
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -175,9 +250,9 @@ namespace mlv_dump_ui
             textBox1.Text = m_Dialog.SelectedPath.Trim();
         }
 
-        private void MlvToDng(string cmdLine,Guid? id)
+        private void ExecutExtendApp(string comProgramName, string cmdLine,Guid? id)
         {
-            string exeName = Directory.GetCurrentDirectory() + "\\mlv_dump.exe";
+            string exeName = $"{Directory.GetCurrentDirectory()}\\{comProgramName}";
 
             //实例化一个进程类
             Process cmd = new Process();
@@ -211,6 +286,11 @@ namespace mlv_dump_ui
 
             cmd.WaitForExit(); //you need this in order to flush the output buffer
         }
+
+        //private void DoubleISO2Dng(string cmdLine, Guid? id)
+        //{
+        //    string exeName = Directory.GetCurrentDirectory() + "\\cr2hdr.exe";
+        //}
 
         private Task Display(string output,Guid? id)
         {
@@ -252,6 +332,25 @@ namespace mlv_dump_ui
             }
         }
 
+        private void Check_ALL2_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            if (cb.IsChecked == true)
+            {
+                foreach (var f in dISOFileInfos)
+                {
+                    f.IsSelected = true;
+                }
+            }
+            else
+            {
+                foreach (var f in dISOFileInfos)
+                {
+                    f.IsSelected = false;
+                }
+            }
+        }
+
         private void ListView1_Drop(object sender, System.Windows.DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
@@ -260,7 +359,7 @@ namespace mlv_dump_ui
                 var query = from f in files
                     let l = new FileInfo(f)
                     where l.Extension.ToLower() == ".mlv"
-                    select new MLVFileInfo()
+                    select new RawFileInfo()
                     {
                         Name = l.Name,
                         Path = l.DirectoryName,
@@ -274,12 +373,52 @@ namespace mlv_dump_ui
             }
         }
 
+        private void ListView2_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+            {
+                String[] files = (String[])e.Data.GetData(DataFormats.FileDrop);
+                var query = from f in files
+                    let l = new FileInfo(f)
+                    where l.Extension.ToLower() == ".cr2"
+                    select new RawFileInfo()
+                    {
+                        Name = l.Name,
+                        Path = l.DirectoryName,
+                        CreateTime = l.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                        Size = Math.Round((decimal)l.Length / (1024 * 1024), 2)
+                    };
+                foreach (var q in query)
+                {
+                    AddDoubleISOFileForListView(q);
+                }
+            }
+        }
+
         private void CheckBox1_Click(object sender, RoutedEventArgs e)
         {
             if (mlvFileInfos.Count(c => c.IsSelected == true) == mlvFileInfos.Count())
-                checkAllSource.IsSelected = true;
+                checkAllSource1.IsSelected = true;
             else
-                checkAllSource.IsSelected = false;
+                checkAllSource1.IsSelected = false;
+        }
+
+        private void CheckBox2_Click(object sender, RoutedEventArgs e)
+        {
+            if (dISOFileInfos.Count(c => c.IsSelected == true) == dISOFileInfos.Count())
+                checkAllSource2.IsSelected = true;
+            else
+                checkAllSource2.IsSelected = false;
+        }
+
+        private void TabLabel1_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            tabIndex = TabIndexs.mlv;
+        }
+
+        private void TabLabel2_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            tabIndex = TabIndexs.diso;
         }
     }
 }

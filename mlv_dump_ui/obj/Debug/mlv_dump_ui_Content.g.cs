@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("cr2hdr.exe")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("mlv_dump.exe")]
 
 

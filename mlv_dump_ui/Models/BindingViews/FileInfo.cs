@@ -2,7 +2,7 @@
 
 namespace mlv_dump_ui.Models.BindingViews
 {
-    public class MLVFileInfo : BaseEntity, INotifyPropertyChanged
+    public class RawFileInfo : BaseEntity, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _isselected = false;
